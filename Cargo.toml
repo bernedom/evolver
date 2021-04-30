@@ -1,5 +1,5 @@
 [package]
-name = "Evolver"
+name = "evolver"
 version = "0.1.0"
 authors = ["Dominik Berner <dominik.berner@gmail.com>"]
 edition = "2018"
