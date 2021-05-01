@@ -26,8 +26,14 @@ fn main() -> Result<(), io::Error> {
             // You can style the entire row.
             Row::new(vec!["Row21", "Row22", "Row23"]).style(Style::default().fg(Color::Blue)),
         ])
+        .style(Style::default().fg(Color::White))
         .block(Block::default().title("world").borders(Borders::ALL))
-        .column_spacing(1);
+        .widths(&[
+            Constraint::Length(1),
+            Constraint::Length(1),
+            Constraint::Length(1),
+        ])
+        .column_spacing(0);
         f.render_widget(world, chunks[0]);
         let log = Block::default().title("log").borders(Borders::ALL);
         f.render_widget(log, chunks[1]);
