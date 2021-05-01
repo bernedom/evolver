@@ -13,9 +13,16 @@ fn main() -> Result<(), io::Error> {
     let world = vec![vec![0; 50]; 20];
 
     let return_value = terminal.draw(|f| {
+        let chunks = Layout::default()
+            .direction(Direction::Horizontal)
+            .margin(1)
+            .constraints([Constraint::Percentage(80), Constraint::Percentage(20)].as_ref())
+            .split(f.size());
         let size = f.size();
         let block = Block::default().title("evolver").borders(Borders::ALL);
-        f.render_widget(block, size);
+        f.render_widget(block, chunks[0]);
+        let block2 = Block::default().title("log").borders(Borders::ALL);
+        f.render_widget(block2, chunks[1]);
     });
 
     // for line in world {
