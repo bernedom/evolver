@@ -2,7 +2,9 @@ use std::io;
 use termion::raw::IntoRawMode;
 use tui::backend::TermionBackend;
 use tui::layout::{Constraint, Direction, Layout};
-use tui::widgets::{Block, Borders, Widget};
+use tui::widgets::{Block, Borders, Row, Table};
+
+use tui::style::{Color, Style};
 use tui::Terminal;
 
 fn main() -> Result<(), io::Error> {
@@ -18,11 +20,17 @@ fn main() -> Result<(), io::Error> {
             .margin(1)
             .constraints([Constraint::Percentage(80), Constraint::Percentage(20)].as_ref())
             .split(f.size());
-        let size = f.size();
-        let block = Block::default().title("evolver").borders(Borders::ALL);
-        f.render_widget(block, chunks[0]);
-        let block2 = Block::default().title("log").borders(Borders::ALL);
-        f.render_widget(block2, chunks[1]);
+        let world = Table::new(vec![
+            // Row can be created from simple strings.
+            Row::new(vec!["Row11", "Row12", "Row13"]),
+            // You can style the entire row.
+            Row::new(vec!["Row21", "Row22", "Row23"]).style(Style::default().fg(Color::Blue)),
+        ])
+        .block(Block::default().title("world").borders(Borders::ALL))
+        .column_spacing(1);
+        f.render_widget(world, chunks[0]);
+        let log = Block::default().title("log").borders(Borders::ALL);
+        f.render_widget(log, chunks[1]);
     });
 
     // for line in world {
