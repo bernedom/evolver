@@ -2,7 +2,7 @@ use std::io;
 use termion::raw::IntoRawMode;
 use tui::backend::TermionBackend;
 use tui::layout::{Constraint, Direction, Layout};
-use tui::widgets::{Block, Borders, Row, Table};
+use tui::widgets::{Block, Borders, Row, Cell, Table};
 
 use tui::style::{Color, Style};
 use tui::Terminal;
@@ -15,7 +15,6 @@ fn main() -> Result<(), io::Error> {
     let mut terminal = Terminal::new(backend)?;
 
     let organisms = vec![vec!["X"; WORLD_WIDTH]; WORLD_HEIGHT];
-    //let world = vec!["X"; WORLD_WIDTH];
 
     let return_value = terminal.draw(|f| {
         let chunks = Layout::default()
@@ -23,12 +22,12 @@ fn main() -> Result<(), io::Error> {
             .margin(1)
             .constraints([Constraint::Percentage(80), Constraint::Percentage(20)].as_ref())
             .split(f.size());
-        let world = Table::new(vec![
-            // Row can be created from simple strings.
-            Row::new(organisms[0].clone()),
-            // You can style the entire row.
-            Row::new(vec!["Row21", "Row22", "Row23"]).style(Style::default().fg(Color::Blue)),
-        ])
+            let rows = organisms.iter().map(|item| {
+                let cells = item.iter().map(|c| Cell::from(*c));
+                Row::new(cells).style(Style::default().fg(Color::Blue))
+
+            });
+        let world = Table::new(rows)
         .style(Style::default().fg(Color::White))
         .block(Block::default().title("world").borders(Borders::ALL))
         .widths(&[Constraint::Length(1); WORLD_WIDTH])
