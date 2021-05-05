@@ -14,6 +14,8 @@ use tui::widgets::{Block, Borders, Cell, Row, Table};
 use tui::style::{Color, Style};
 use tui::Terminal;
 
+use rand::{thread_rng, Rng};
+
 const WORLD_WIDTH: usize = 50;
 const WORLD_HEIGHT: usize = 20;
 
@@ -28,7 +30,17 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let backend = CrosstermBackend::new(stdout);
     let mut terminal = Terminal::new(backend)?;
 
-    let mut organisms = vec![vec!["X"; WORLD_WIDTH]; WORLD_HEIGHT];
+    let mut rng = thread_rng();
+    let mut rng_filler = || -> &str {
+        match rng.gen_bool(1.0 / 3.0) {
+            true => "X",
+            false => "",
+        }
+    };
+
+    let mut organisms: Vec<Vec<&str>> = (0..WORLD_HEIGHT)
+        .map(|_| (0..WORLD_WIDTH).map(|_| rng_filler()).collect())
+        .collect();
 
     // set up input handling
     let (tx, rx) = mpsc::channel();
