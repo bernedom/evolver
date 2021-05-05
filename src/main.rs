@@ -1,6 +1,9 @@
+use crossterm::{
+    event::{self, Event as CEvent, KeyCode},
+    terminal::{disable_raw_mode, enable_raw_mode},
+};
 use std::io;
-use termion::raw::IntoRawMode;
-use tui::backend::TermionBackend;
+use tui::backend::CrosstermBackend;
 use tui::layout::{Constraint, Direction, Layout};
 use tui::widgets::{Block, Borders, Cell, Row, Table};
 
@@ -9,9 +12,11 @@ use tui::Terminal;
 
 const WORLD_WIDTH: usize = 50;
 const WORLD_HEIGHT: usize = 20;
+
 fn main() -> Result<(), io::Error> {
-    let stdout = io::stdout().into_raw_mode()?;
-    let backend = TermionBackend::new(stdout);
+    enable_raw_mode().expect("can run in raw mode");
+    let stdout = io::stdout();
+    let backend = CrosstermBackend::new(stdout);
     let mut terminal = Terminal::new(backend)?;
 
     let mut organisms = vec![vec!["X"; WORLD_WIDTH]; WORLD_HEIGHT];
