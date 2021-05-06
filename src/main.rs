@@ -47,25 +47,8 @@ fn draw<B : tui::backend::Backend>(terminal: &mut Terminal<B>, organisms : &Vec<
     })
 }
 
-fn main() -> Result<(), Box<dyn std::error::Error>> {
-    enable_raw_mode().expect("can run in raw mode");
-    let stdout = io::stdout();
-    let backend = CrosstermBackend::new(stdout);
-    let mut terminal = Terminal::new(backend)?;
-
-    let mut rng = thread_rng();
-    let mut rng_filler = || -> &str {
-        match rng.gen_bool(1.0 / 3.0) {
-            true => "X",
-            false => "",
-        }
-    };
-
-    let mut organisms: Vec<Vec<&str>> = (0..WORLD_HEIGHT)
-        .map(|_| (0..WORLD_WIDTH).map(|_| rng_filler()).collect())
-        .collect();
-
-    // set up input handling
+fn spawn_event_listener() -> mpsc::Receiver<Event<crossterm::event::KeyEvent>>
+{
     let (tx, rx) = mpsc::channel();
     let tick_rate = Duration::from_millis(200);
     thread::spawn(move || {
@@ -88,6 +71,29 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
         }
     });
+    rx
+}
+
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    enable_raw_mode().expect("can run in raw mode");
+    let stdout = io::stdout();
+    let backend = CrosstermBackend::new(stdout);
+    let mut terminal = Terminal::new(backend)?;
+
+    let mut rng = thread_rng();
+    let mut rng_filler = || -> &str {
+        match rng.gen_bool(1.0 / 3.0) {
+            true => "X",
+            false => "",
+        }
+    };
+
+    let mut organisms: Vec<Vec<&str>> = (0..WORLD_HEIGHT)
+        .map(|_| (0..WORLD_WIDTH).map(|_| rng_filler()).collect())
+        .collect();
+
+    // set up input handling
+    let rx = spawn_event_listener();
 
     loop {
         draw(&mut terminal, &organisms)?;
@@ -109,7 +115,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         match organisms[0][1] {
             "X" => organisms[0][1] = "Y",
             "Y" => organisms[0][1] = "X",
-            _ => {}
+            _ => organisms[0][1] = "Z"
         }
     }
     Ok(())
