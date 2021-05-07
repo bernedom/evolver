@@ -5,7 +5,8 @@ use tui::widgets::{Block, Borders, Cell, Row, Table};
 use tui::style::{Color, Style};
 use tui::Terminal;
 
-const WORLD_WIDTH: usize = 50;
+pub const WORLD_WIDTH: usize = 50;
+pub const WORLD_HEIGHT: usize = 20;
 
 pub fn draw<B: tui::backend::Backend>(
     terminal: &mut Terminal<B>,
