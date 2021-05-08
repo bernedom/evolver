@@ -7,10 +7,14 @@ use std::io;
 use tui::backend::CrosstermBackend;
 use tui::Terminal;
 
-use rand::{thread_rng, Rng};
+use rand::Rng;
 
 mod event_listener;
 mod ui;
+
+const GENOMES: &[u8] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZ\
+                             abcdefghijklmnopqrstuvwxyz\
+                             0123456789! ";
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     enable_raw_mode().expect("can run in raw mode");
@@ -18,15 +22,19 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let backend = CrosstermBackend::new(stdout);
     let mut terminal = Terminal::new(backend)?;
 
-    let mut rng = thread_rng();
-    let mut rng_filler = || -> &str {
-        match rng.gen_bool(1.0 / 3.0) {
-            true => "X",
-            false => "",
+    // populate
+    let mut rng = rand::thread_rng();
+
+    let initial_genome = GENOMES[rng.gen_range(0..GENOMES.len())] as char;
+
+    let mut rng_filler = || -> String {
+        match rng.gen_bool(1.0 / 5.0) {
+            true => String::from(initial_genome),
+            false => String::from(""),
         }
     };
 
-    let mut organisms: Vec<Vec<&str>> = (0..ui::WORLD_HEIGHT)
+    let mut organisms: Vec<Vec<String>> = (0..ui::WORLD_HEIGHT)
         .map(|_| (0..ui::WORLD_WIDTH).map(|_| rng_filler()).collect())
         .collect();
 
@@ -50,10 +58,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
         // todo put logic in here, limit to 60fps
         // todo add event handling to quit qith esc or 'q'
-        match organisms[0][1] {
-            "X" => organisms[0][1] = "Y",
-            "Y" => organisms[0][1] = "X",
-            _ => organisms[0][1] = "Z",
+        match organisms[0][1].as_str() {
+            "X" => organisms[0][1] = String::from("Y"),
+            "Y" => organisms[0][1] = String::from("X"),
+            _ => organisms[0][1] = String::from("Z"),
         }
     }
     Ok(())

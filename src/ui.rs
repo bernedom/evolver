@@ -10,7 +10,7 @@ pub const WORLD_HEIGHT: usize = 20;
 
 pub fn draw<B: tui::backend::Backend>(
     terminal: &mut Terminal<B>,
-    organisms: &Vec<Vec<&str>>,
+    organisms: &Vec<Vec<String>>,
 ) -> std::result::Result<(), io::Error> {
     terminal.draw(|f| {
         let chunks = Layout::default()
@@ -19,7 +19,7 @@ pub fn draw<B: tui::backend::Backend>(
             .constraints([Constraint::Percentage(80), Constraint::Percentage(20)].as_ref())
             .split(f.size());
         let rows = organisms.iter().map(|item| {
-            let cells = item.iter().map(|c| Cell::from(*c));
+            let cells = item.iter().map(|c| Cell::from(c.as_str()));
             Row::new(cells).style(Style::default().fg(Color::Blue))
         });
         let world = Table::new(rows)
