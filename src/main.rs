@@ -34,8 +34,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
     };
 
-    let mut organisms: Vec<Vec<String>> = (0..ui::WORLD_HEIGHT)
-        .map(|_| (0..ui::WORLD_WIDTH).map(|_| rng_filler()).collect())
+    let mut organisms: Vec<String> = (0..ui::WORLD_HEIGHT * ui::WORLD_WIDTH)
+        .map(|_| rng_filler())
         .collect();
 
     // set up input handling
@@ -58,10 +58,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
         // todo put logic in here, limit to 60fps
         // todo add event handling to quit qith esc or 'q'
-        match organisms[0][1].as_str() {
-            "X" => organisms[0][1] = String::from("Y"),
-            "Y" => organisms[0][1] = String::from("X"),
-            _ => organisms[0][1] = String::from("Z"),
+        match organisms[0].as_str() {
+            "X" => organisms[0] = String::from("Y"),
+            "Y" => organisms[0] = String::from("X"),
+            _ => organisms[0] = String::from("Z"),
         }
     }
     Ok(())
