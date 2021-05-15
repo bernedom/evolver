@@ -64,12 +64,23 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             i.age += 1;
             // todo parameterize conditions and probabilities  for multiplication, death etc.
             let max_age: f64 = 100.0;
+            // organisms die faster with age
             match rng.gen_bool(i.age as f64 / max_age) {
                 true => {
                     i.genome = String::from("");
                     i.age = 0
                 }
                 false => {}
+            }
+            // organisms are reborn after a cooldown period
+            if i.age > 10 && i.genome == "" {
+                match rng.gen_bool(i.age as f64 / (max_age * 2.0)) {
+                    true => {
+                        i.genome = String::from(initial_genome);
+                        i.age = 0;
+                    }
+                    false => {}
+                }
             }
         });
 
