@@ -8,9 +8,11 @@ use tui::Terminal;
 pub const WORLD_WIDTH: usize = 50;
 pub const WORLD_HEIGHT: usize = 20;
 
+use crate::organism::Organism;
+
 pub fn draw<B: tui::backend::Backend>(
     terminal: &mut Terminal<B>,
-    organisms: &Vec<String>,
+    organisms: &Vec<Organism>,
 ) -> std::result::Result<(), io::Error> {
     terminal.draw(|f| {
         let chunks = Layout::default()
@@ -19,7 +21,7 @@ pub fn draw<B: tui::backend::Backend>(
             .constraints([Constraint::Percentage(80), Constraint::Percentage(20)].as_ref())
             .split(f.size());
         let rows = organisms.chunks(WORLD_WIDTH).map(|item| {
-            let cells = item.iter().map(|c| Cell::from(c.as_str()));
+            let cells = item.iter().map(|c| Cell::from(c.genome.as_str()));
             Row::new(cells).style(Style::default().fg(Color::Blue))
         });
         let world = Table::new(rows)

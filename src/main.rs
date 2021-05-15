@@ -10,6 +10,7 @@ use tui::Terminal;
 use rand::Rng;
 
 mod event_listener;
+mod organism;
 mod ui;
 
 const GENOMES: &[u8] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZ\
@@ -34,8 +35,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
     };
 
-    let mut organisms: Vec<String> = (0..ui::WORLD_HEIGHT * ui::WORLD_WIDTH)
-        .map(|_| rng_filler())
+    let mut organisms: Vec<organism::Organism> = (0..ui::WORLD_HEIGHT * ui::WORLD_WIDTH)
+        .map(|_| organism::Organism {
+            genome: rng_filler(),
+            ..Default::default()
+        })
         .collect();
 
     // set up input handling
@@ -58,10 +62,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
         // todo put logic in here, limit to 60fps
         // todo add event handling to quit qith esc or 'q'
-        match organisms[0].as_str() {
-            "X" => organisms[0] = String::from("Y"),
-            "Y" => organisms[0] = String::from("X"),
-            _ => organisms[0] = String::from("Z"),
+        match organisms[0].genome.as_str() {
+            "X" => organisms[0].genome = String::from("Y"),
+            "Y" => organisms[0].genome = String::from("X"),
+            _ => organisms[0].genome = String::from("Z"),
         }
     }
     Ok(())
