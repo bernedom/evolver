@@ -60,13 +60,20 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             event_listener::Event::Tick => {}
         }
 
-        // todo put logic in here, limit to 60fps
-        // todo add event handling to quit qith esc or 'q'
-        match organisms[0].genome.as_str() {
-            "X" => organisms[0].genome = String::from("Y"),
-            "Y" => organisms[0].genome = String::from("X"),
-            _ => organisms[0].genome = String::from("Z"),
-        }
+        organisms.iter_mut().for_each(|i| {
+            i.age += 1;
+            // todo parameterize conditions and probabilities  for multiplication, death etc.
+            let max_age: f64 = 100.0;
+            match rng.gen_bool(i.age as f64 / max_age) {
+                true => {
+                    i.genome = String::from("");
+                    i.age = 0
+                }
+                false => {}
+            }
+        });
+
+        // todo limit to 60fps
     }
     Ok(())
 }
