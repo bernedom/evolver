@@ -3,4 +3,10 @@ Evolver is a simple artificial life simulation. The world consists of organisms 
 
 Genomes are made up of a list of chars where each char represents a certain characteristic. So each type of organism might react differently to events from the outside. 
 
+## Ideas and todos
+
+* seed random generators to reproduce events
+* add text log to UI 
+* Colorize different genomes
+
 
