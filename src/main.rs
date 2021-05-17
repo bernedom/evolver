@@ -42,11 +42,13 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         })
         .collect();
 
+    let mut log = String::from("");
+
     // set up input handling
     let rx = event_listener::spawn_event_listener();
 
     loop {
-        ui::draw(&mut terminal, &organisms)?;
+        ui::draw(&mut terminal, &organisms, &log)?;
 
         match rx.recv()? {
             event_listener::Event::Input(event) => match event.code {
@@ -81,7 +83,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                         match rng.gen_bool(mutation_probability) {
                             true => {
                                 i.genome =
-                                    String::from(GENOMES[rng.gen_range(0..GENOMES.len())] as char)
+                                    String::from(GENOMES[rng.gen_range(0..GENOMES.len())] as char);
+                                log += format!("New genome {} from mutation\n", i.genome.as_str()).as_str();
                             }
                             false => i.genome = String::from(initial_genome),
                         }
