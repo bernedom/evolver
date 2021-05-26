@@ -76,7 +76,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
             // organisms are reborn after a cooldown period
             // todo change this so existing organisms are rewspawning from their own genomes
-            if i.age > 10 && i.genome == "" {
+            if i.age > 10 && !i.is_alive() {
                 match rng.gen_bool(i.age as f64 / (max_age * 2.0)) {
                     true => {
                         let mutation_probability = 1.0 / 1000.0;
@@ -84,7 +84,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                             true => {
                                 i.genome =
                                     String::from(GENOMES[rng.gen_range(0..GENOMES.len())] as char);
-                                log += format!("New genome {} from mutation\n", i.genome.as_str()).as_str();
+                                log += format!("New genome {} from mutation\n", i.genome.as_str())
+                                    .as_str();
                             }
                             false => i.genome = String::from(initial_genome),
                         }

@@ -4,6 +4,12 @@ pub struct Organism {
     pub age: u32,
 }
 
+impl Organism {
+    pub fn is_alive(&self) -> bool {
+        return &self.genome != "";
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
