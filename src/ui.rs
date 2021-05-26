@@ -47,7 +47,11 @@ pub fn draw<B: tui::backend::Backend>(
             .margin(0)
             .constraints([Constraint::Percentage(30), Constraint::Percentage(70)].as_ref())
             .split(chunks[1]);
-        let status = Paragraph::new("genomes")
+        let mut known_genomes_msg: String = "known genomes: ".to_string();
+        for g in known_genomes {
+            known_genomes_msg += &g.0;
+        }
+        let status = Paragraph::new(known_genomes_msg)
             .block(Block::default().title("status").borders(Borders::ALL))
             .wrap(Wrap { trim: true });
         f.render_widget(status, status_widget_layout[0]);
