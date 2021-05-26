@@ -2,6 +2,7 @@ use crossterm::{
     event::KeyCode,
     terminal::{disable_raw_mode, enable_raw_mode},
 };
+
 use std::io;
 
 use tui::backend::CrosstermBackend;
@@ -84,8 +85,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                             true => {
                                 i.genome =
                                     String::from(GENOMES[rng.gen_range(0..GENOMES.len())] as char);
-                                log += format!("New genome {} from mutation\n", i.genome.as_str())
-                                    .as_str();
+                                log +=
+                                    format!("New genome '{}' from mutation\n", i.genome.as_str())
+                                        .as_str();
                             }
                             false => i.genome = String::from(initial_genome),
                         }
