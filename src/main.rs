@@ -18,6 +18,15 @@ const GENOMES: &[u8] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZ\
                              abcdefghijklmnopqrstuvwxyz\
                              0123456789! ";
 
+fn spawn(o : &organism::Organism, rng : &mut rand::prelude::ThreadRng) -> Option<organism::Organism>
+{
+    if o.age > 10 {
+        let spawned = organism::Organism{genome:String::from(o.genome.as_str()), ..Default::default()};
+        return Some(spawned)
+    }
+    None
+}
+
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     enable_raw_mode().expect("can run in raw mode");
     let stdout = io::stdout();
@@ -75,6 +84,19 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 }
                 false => {}
             }
+
+            if i.is_alive()
+            {
+                let new_organism = spawn(i, &mut rng);
+                match new_organism{
+                    Some(org) => {
+                        log += format!("New organism: {}\n " ,  org.genome.as_str()).as_str();
+                    }
+                    None => {}
+                }
+                
+            }
+            
             // organisms are reborn after a cooldown period
             // todo change this so existing organisms are rewspawning from their own genomes
             if i.age > 10 && !i.is_alive() {

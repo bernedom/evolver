@@ -10,6 +10,7 @@ impl Organism {
     }
 }
 
+
 #[cfg(test)]
 mod tests {
     use super::*;
