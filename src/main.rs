@@ -20,9 +20,27 @@ const GENOMES: &[u8] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZ\
 
 fn spawn(o : &organism::Organism, rng : &mut rand::prelude::ThreadRng) -> Option<organism::Organism>
 {
+    let max_age: f64 = 100.0;
     if o.age > 10 {
-        let spawned = organism::Organism{genome:String::from(o.genome.as_str()), ..Default::default()};
-        return Some(spawned)
+        
+        match rng.gen_bool(o.age as f64 / (max_age * 2.0)) {
+            true => {
+                let mut spawned = organism::Organism{genome:String::from(o.genome.as_str()), ..Default::default()};
+                let mutation_probability = 1.0 / 1000.0;
+                match rng.gen_bool(mutation_probability) {
+                    true => {
+                        spawned.genome =
+                            String::from(GENOMES[rng.gen_range(0..GENOMES.len())] as char);
+                        // log +=
+                        //     format!("New genome '{}' from mutation\n", o.genome.as_str())
+                        //         .as_str();
+                    }
+                    false => {}
+                }
+                return Some(spawned)
+            }
+            false => {}
+        }
     }
     None
 }
@@ -91,6 +109,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 match new_organism{
                     Some(org) => {
                         log += format!("New organism: {}\n " ,  org.genome.as_str()).as_str();
+                        // todo store somewhere and populate later
                     }
                     None => {}
                 }
@@ -100,23 +119,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             // organisms are reborn after a cooldown period
             // todo change this so existing organisms are rewspawning from their own genomes
             if i.age > 10 && !i.is_alive() {
-                match rng.gen_bool(i.age as f64 / (max_age * 2.0)) {
-                    true => {
-                        let mutation_probability = 1.0 / 1000.0;
-                        match rng.gen_bool(mutation_probability) {
-                            true => {
-                                i.genome =
-                                    String::from(GENOMES[rng.gen_range(0..GENOMES.len())] as char);
-                                log +=
-                                    format!("New genome '{}' from mutation\n", i.genome.as_str())
-                                        .as_str();
-                            }
-                            false => i.genome = String::from(initial_genome),
-                        }
-                        i.age = 0;
-                    }
-                    false => {}
-                }
+                
             }
         });
 
