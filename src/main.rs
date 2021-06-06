@@ -18,14 +18,16 @@ const GENOMES: &[u8] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZ\
                              abcdefghijklmnopqrstuvwxyz\
                              0123456789! ";
 
-fn spawn(o : &organism::Organism, rng : &mut rand::prelude::ThreadRng) -> Option<organism::Organism>
-{
+fn spawn(o: &organism::Organism, rng: &mut rand::prelude::ThreadRng) -> Option<organism::Organism> {
     let max_age: f64 = 100.0;
     if o.age > 10 {
-        
-        match rng.gen_bool(o.age as f64 / (max_age * 2.0)) {
+        // todo store conditions in organism struct
+        match rng.gen_bool(o.age as f64 / (max_age / 2.0)) {
             true => {
-                let mut spawned = organism::Organism{genome:String::from(o.genome.as_str()), ..Default::default()};
+                let mut spawned = organism::Organism {
+                    genome: String::from(o.genome.as_str()),
+                    ..Default::default()
+                };
                 let mutation_probability = 1.0 / 1000.0;
                 match rng.gen_bool(mutation_probability) {
                     true => {
@@ -37,7 +39,7 @@ fn spawn(o : &organism::Organism, rng : &mut rand::prelude::ThreadRng) -> Option
                     }
                     false => {}
                 }
-                return Some(spawned)
+                return Some(spawned);
             }
             false => {}
         }
@@ -90,7 +92,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             event_listener::Event::Tick => {}
         }
 
-        organisms.iter_mut().for_each(|i| {
+        let mut newborns = Vec::new();
+
+        for i in organisms.iter_mut() {
             i.age += 1;
             // todo parameterize conditions and probabilities  for multiplication, death etc.
             let max_age: f64 = 100.0;
@@ -103,25 +107,34 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 false => {}
             }
 
-            if i.is_alive()
-            {
+            if i.is_alive() {
                 let new_organism = spawn(i, &mut rng);
-                match new_organism{
+                match new_organism {
                     Some(org) => {
-                        log += format!("New organism: {}\n " ,  org.genome.as_str()).as_str();
-                        // todo store somewhere and populate later
+                        newborns.push(org);
                     }
                     None => {}
                 }
-                
             }
-            
             // organisms are reborn after a cooldown period
             // todo change this so existing organisms are rewspawning from their own genomes
-            if i.age > 10 && !i.is_alive() {
-                
+            if i.age > 10 && !i.is_alive() {}
+        }
+
+        // todo insert newborns close to parent
+        while newborns.len() > 0 {
+            if let Some(newborn) = newborns.pop() {
+                let first_dead = organisms.iter().position(|o| !o.is_alive());
+                match first_dead {
+                    Some(org) => {
+                        organisms[org] = newborn;
+                    }
+                    None => {
+                        log += "No space left on world, cannot spawn new organism";
+                    }
+                }
             }
-        });
+        }
 
         // todo limit to 60fps
     }
