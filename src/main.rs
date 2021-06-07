@@ -13,18 +13,19 @@ use rand::Rng;
 mod event_listener;
 mod organism;
 mod ui;
+use organism::Organism;
 
 const GENOMES: &[u8] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZ\
                              abcdefghijklmnopqrstuvwxyz\
                              0123456789! ";
 
-fn spawn(o: &organism::Organism, rng: &mut rand::prelude::ThreadRng) -> Option<organism::Organism> {
+fn spawn(o: &Organism, rng: &mut rand::prelude::ThreadRng) -> Option<Organism> {
     let max_age: f64 = 100.0;
     if o.age > 10 {
         // todo store conditions in organism struct
         match rng.gen_bool(o.age as f64 / (max_age / 2.0)) {
             true => {
-                let mut spawned = organism::Organism {
+                let mut spawned = Organism {
                     genome: String::from(o.genome.as_str()),
                     ..Default::default()
                 };
@@ -65,8 +66,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
     };
 
-    let mut organisms: Vec<organism::Organism> = (0..ui::WORLD_HEIGHT * ui::WORLD_WIDTH)
-        .map(|_| organism::Organism {
+    let mut organisms: Vec<Organism> = (0..ui::WORLD_HEIGHT * ui::WORLD_WIDTH)
+        .map(|_| Organism {
             genome: rng_filler(),
             ..Default::default()
         })
