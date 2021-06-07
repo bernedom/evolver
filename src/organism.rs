@@ -1,10 +1,17 @@
-#[derive(Default)]
 pub struct Organism {
     pub genome: String,
     pub age: u32,
+    pub max_age: u32,
 }
 
 impl Organism {
+    pub fn new(g: String) -> Self {
+        Self {
+            genome: g,
+            age: 0,
+            max_age: 100,
+        }
+    }
     pub fn is_alive(&self) -> bool {
         return &self.genome != "";
     }

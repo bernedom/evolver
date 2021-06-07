@@ -25,10 +25,7 @@ fn spawn(o: &Organism, rng: &mut rand::prelude::ThreadRng) -> Option<Organism> {
         // todo store conditions in organism struct
         match rng.gen_bool(o.age as f64 / (max_age / 2.0)) {
             true => {
-                let mut spawned = Organism {
-                    genome: String::from(o.genome.as_str()),
-                    ..Default::default()
-                };
+                let mut spawned = Organism::new(String::from(o.genome.as_str()));
                 let mutation_probability = 1.0 / 1000.0;
                 match rng.gen_bool(mutation_probability) {
                     true => {
@@ -67,10 +64,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     };
 
     let mut organisms: Vec<Organism> = (0..ui::WORLD_HEIGHT * ui::WORLD_WIDTH)
-        .map(|_| Organism {
-            genome: rng_filler(),
-            ..Default::default()
-        })
+        .map(|_| Organism::new(rng_filler()) )
         .collect();
 
     let mut log = String::from("");
