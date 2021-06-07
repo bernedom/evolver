@@ -23,8 +23,9 @@ mod tests {
 
     #[test]
     fn test_default_construction() {
-        let o: Organism = Default::default();
+        let o = Organism::new(String::from("abc"));
         assert_eq!(0, o.age);
-        assert_eq!("", o.genome);
+        assert_eq!("abc", o.genome);
+        assert_eq!(100, o.max_age);
     }
 }
