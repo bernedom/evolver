@@ -20,10 +20,9 @@ const GENOMES: &[u8] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZ\
                              0123456789! ";
 
 fn spawn(o: &Organism, rng: &mut rand::prelude::ThreadRng) -> Option<Organism> {
-    let max_age: f64 = 100.0;
     if o.age > 10 {
         // todo store conditions in organism struct
-        match rng.gen_bool(o.age as f64 / (max_age / 2.0)) {
+        match rng.gen_bool(o.age as f64 / (o.max_age as f64 / 2.0)) {
             true => {
                 let mut spawned = Organism::new(String::from(o.genome.as_str()));
                 let mutation_probability = 1.0 / 1000.0;
@@ -64,7 +63,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     };
 
     let mut organisms: Vec<Organism> = (0..ui::WORLD_HEIGHT * ui::WORLD_WIDTH)
-        .map(|_| Organism::new(rng_filler()) )
+        .map(|_| Organism::new(rng_filler()))
         .collect();
 
     let mut log = String::from("");
@@ -91,10 +90,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
         for i in organisms.iter_mut() {
             i.age += 1;
-            // todo parameterize conditions and probabilities  for multiplication, death etc.
-            let max_age: f64 = 100.0;
             // organisms die faster with age
-            match rng.gen_bool(i.age as f64 / max_age) {
+            match rng.gen_bool(i.age as f64 / i.max_age as f64) {
                 true => {
                     i.genome = String::from("");
                     i.age = 0
