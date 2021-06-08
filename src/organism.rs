@@ -28,4 +28,16 @@ mod tests {
         assert_eq!("abc", o.genome);
         assert_eq!(100, o.max_age);
     }
+
+    #[test]
+    fn test_organism_with_empty_genome_is_dead() {
+        let o = Organism::new("".to_string());
+        assert_eq!(false, o.is_alive());
+    }
+    #[test]
+    fn test_organism_with_non_empty_genome_is_alive() {
+        let o = Organism::new("x".to_string()
+    );
+        assert_eq!(true, o.is_alive());
+    }
 }
