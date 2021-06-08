@@ -13,6 +13,8 @@ use rand::Rng;
 mod event_listener;
 mod organism;
 mod ui;
+mod world;
+
 use organism::Organism;
 
 const GENOMES: &[u8] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZ\
@@ -109,15 +111,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         // todo insert newborns close to parent
         while newborns.len() > 0 {
             if let Some(newborn) = newborns.pop() {
-                let first_dead = world.iter().position(|o| !o.is_alive());
-                match first_dead {
-                    Some(org) => {
-                        world[org] = newborn.0;
-                    }
-                    None => {
-                        log += "No space left on world, cannot spawn new organism";
-                    }
-                }
+                world::insert_close_to_parent(newborn.0, &mut world, newborn.1);
             }
         }
 
