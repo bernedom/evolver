@@ -12,9 +12,9 @@ pub const WORLD_HEIGHT: usize = 20;
 
 use crate::organism::Organism;
 
-fn count_genomes(organisms: &Vec<Organism>) -> HashMap<String, u16> {
+fn count_genomes(world: &Vec<Organism>) -> HashMap<String, u16> {
     let mut result: HashMap<String, u16> = HashMap::new();
-    for o in organisms {
+    for o in world {
         *result.entry(o.genome.to_string()).or_default() += 1;
     }
     result
@@ -22,17 +22,17 @@ fn count_genomes(organisms: &Vec<Organism>) -> HashMap<String, u16> {
 
 pub fn draw<B: tui::backend::Backend>(
     terminal: &mut Terminal<B>,
-    organisms: &Vec<Organism>,
+    world: &Vec<Organism>,
     log_messages: &String,
 ) -> std::result::Result<(), io::Error> {
-    let known_genomes = count_genomes(&organisms);
+    let known_genomes = count_genomes(&world);
     terminal.draw(|f| {
         let chunks = Layout::default()
             .direction(Direction::Horizontal)
             .margin(1)
             .constraints([Constraint::Percentage(50), Constraint::Percentage(50)].as_ref())
             .split(f.size());
-        let rows = organisms.chunks(WORLD_WIDTH).map(|item| {
+        let rows = world.chunks(WORLD_WIDTH).map(|item| {
             let cells = item.iter().map(|c| Cell::from(c.genome.as_str()));
             Row::new(cells).style(Style::default().fg(Color::Blue))
         });

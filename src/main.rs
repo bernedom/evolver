@@ -58,7 +58,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
     };
 
-    let mut organisms: Vec<Organism> = (0..ui::WORLD_HEIGHT * ui::WORLD_WIDTH)
+    let mut world: Vec<Organism> = (0..ui::WORLD_HEIGHT * ui::WORLD_WIDTH)
         .map(|_| Organism::new(rng_filler()))
         .collect();
 
@@ -68,7 +68,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let rx = event_listener::spawn_event_listener();
 
     loop {
-        ui::draw(&mut terminal, &organisms, &log)?;
+        ui::draw(&mut terminal, &world, &log)?;
 
         match rx.recv()? {
             event_listener::Event::Input(event) => match event.code {
@@ -84,9 +84,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
         let mut newborns = Vec::new();
 
-        for (idx, organism) in organisms.iter_mut().enumerate() {
+        for (idx, organism) in world.iter_mut().enumerate() {
             organism.age += 1;
-            // organisms die faster with age
+            // world die faster with age
             match rng.gen_bool(organism.age as f64 / organism.max_age as f64) {
                 true => {
                     organism.genome = String::from("");
@@ -109,10 +109,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         // todo insert newborns close to parent
         while newborns.len() > 0 {
             if let Some(newborn) = newborns.pop() {
-                let first_dead = organisms.iter().position(|o| !o.is_alive());
+                let first_dead = world.iter().position(|o| !o.is_alive());
                 match first_dead {
                     Some(org) => {
-                        organisms[org] = newborn.0;
+                        world[org] = newborn.0;
                     }
                     None => {
                         log += "No space left on world, cannot spawn new organism";
