@@ -108,9 +108,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                     None => {}
                 }
             }
-            // organisms are reborn after a cooldown period
-            // todo change this so existing organisms are rewspawning from their own genomes
-            if i.age > 10 && !i.is_alive() {}
         }
 
         // todo insert newborns close to parent
