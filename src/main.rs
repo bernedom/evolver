@@ -30,9 +30,6 @@ fn spawn(o: &Organism, rng: &mut rand::prelude::ThreadRng) -> Option<Organism> {
                     true => {
                         spawned.genome =
                             String::from(GENOMES[rng.gen_range(0..GENOMES.len())] as char);
-                        // log +=
-                        //     format!("New genome '{}' from mutation\n", o.genome.as_str())
-                        //         .as_str();
                     }
                     false => {}
                 }
@@ -50,7 +47,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let backend = CrosstermBackend::new(stdout);
     let mut terminal = Terminal::new(backend)?;
 
-    // populate
     let mut rng = rand::thread_rng();
 
     let initial_genome = GENOMES[rng.gen_range(0..GENOMES.len())] as char;
@@ -88,22 +84,22 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
         let mut newborns = Vec::new();
 
-        for i in organisms.iter_mut() {
-            i.age += 1;
+        for (idx, organism) in organisms.iter_mut().enumerate() {
+            organism.age += 1;
             // organisms die faster with age
-            match rng.gen_bool(i.age as f64 / i.max_age as f64) {
+            match rng.gen_bool(organism.age as f64 / organism.max_age as f64) {
                 true => {
-                    i.genome = String::from("");
-                    i.age = 0
+                    organism.genome = String::from("");
+                    organism.age = 0
                 }
                 false => {}
             }
 
-            if i.is_alive() {
-                let new_organism = spawn(i, &mut rng);
+            if organism.is_alive() {
+                let new_organism = spawn(organism, &mut rng);
                 match new_organism {
                     Some(org) => {
-                        newborns.push(org);
+                        newborns.push((org, idx));
                     }
                     None => {}
                 }
@@ -116,7 +112,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 let first_dead = organisms.iter().position(|o| !o.is_alive());
                 match first_dead {
                     Some(org) => {
-                        organisms[org] = newborn;
+                        organisms[org] = newborn.0;
                     }
                     None => {
                         log += "No space left on world, cannot spawn new organism";
