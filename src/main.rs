@@ -64,7 +64,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .map(|_| Organism::new(rng_filler()))
         .collect();
 
-    let mut log = String::from("");
+    let log = String::from("");
 
     // set up input handling
     let rx = event_listener::spawn_event_listener();
