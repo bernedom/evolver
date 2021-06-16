@@ -21,19 +21,41 @@ fn find_closest_dead_index(world: &Vec<Organism>, start_idx: usize) -> Result<us
         return Ok(start_idx);
     }
     // search next dead cell forward
-    for i in start_idx..world.len() {
-        if !world[i].is_alive() {
-            return Ok(i);
+    let result_fwd = || -> Option<usize> {
+        for i in start_idx..world.len() {
+            if !world[i].is_alive() {
+                return Some(i);
+            }
         }
-    }
+        None
+    }();
     // search next dead cell backwards
-    for i in (0..start_idx).rev() {
-        if !world[i].is_alive() {
-            return Ok(i);
+    let mut result_backwd = || -> Option<usize> {
+        for i in (0..start_idx).rev() {
+            if !world[i].is_alive() {
+                return Some(i);
+            }
         }
+        None
+    }();
+
+    if result_fwd == None && result_backwd == None {
+        return Err("No space left in world".to_owned());
     }
 
-    Err("No space left in world".to_owned())
+    if result_fwd == None && result_backwd != None {
+        return Ok(result_backwd.unwrap());
+    }
+
+    if result_fwd != None && result_backwd == None {
+        return Ok(result_fwd.unwrap());
+    }
+
+    if result_fwd.unwrap() - start_idx <= start_idx - result_backwd.unwrap() {
+        return Ok(result_fwd.unwrap());
+    } else {
+        return Ok(result_backwd.unwrap());
+    }
 }
 
 #[cfg(test)]
@@ -87,14 +109,13 @@ mod tests {
     }
 
     #[test]
-    fn test_closer_match_takes_precendence()
-    {
-        let mut world: Vec<Organism> = Vec::with_capacity(5);
+    fn test_closer_match_takes_precendence() {
+        let mut world: Vec<Organism> = Vec::with_capacity(6);
         for _i in 0..world.capacity() {
             world.push(Organism::new("a".to_owned()));
         }
         world[5].genome = "".to_owned();
-        world[2].genome = "".to_owned(); 
+        world[2].genome = "".to_owned();
         assert_eq!(find_closest_dead_index(&world, 3).unwrap(), 2);
     }
 }
