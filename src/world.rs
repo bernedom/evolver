@@ -1,12 +1,12 @@
 use crate::organism::Organism;
 
 pub fn insert_close_to_parent(organism: Organism, world: &mut Vec<Organism>, idx: usize) {
-    let first_dead = world.iter().position(|o| !o.is_alive());
+    let first_dead = find_closest_dead_index(&world, idx);
     match first_dead {
-        Some(org) => {
+        Ok(org) => {
             world[org] = organism;
         }
-        None => {
+        Err(_msg) => {
             //log += "No space left on world, cannot spawn new organism";
         }
     }
@@ -30,7 +30,7 @@ fn find_closest_dead_index(world: &Vec<Organism>, start_idx: usize) -> Result<us
         None
     }();
     // search next dead cell backwards
-    let mut result_backwd = || -> Option<usize> {
+    let result_backwd = || -> Option<usize> {
         for i in (0..start_idx).rev() {
             if !world[i].is_alive() {
                 return Some(i);
