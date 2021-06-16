@@ -118,4 +118,15 @@ mod tests {
         world[2].genome = "".to_owned();
         assert_eq!(find_closest_dead_index(&world, 3).unwrap(), 2);
     }
+
+    #[test]
+    fn test_on_same_distance_forward_match_takes_precendence() {
+        let mut world: Vec<Organism> = Vec::with_capacity(6);
+        for _i in 0..world.capacity() {
+            world.push(Organism::new("a".to_owned()));
+        }
+        world[4].genome = "".to_owned();
+        world[2].genome = "".to_owned();
+        assert_eq!(find_closest_dead_index(&world, 3).unwrap(), 4);
+    }
 }
