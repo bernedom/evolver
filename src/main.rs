@@ -108,7 +108,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
         }
 
-        // todo insert newborns close to parent
         while newborns.len() > 0 {
             if let Some(newborn) = newborns.pop() {
                 world::insert_close_to_parent(newborn.0, &mut world, newborn.1);
