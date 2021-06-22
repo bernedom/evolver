@@ -1,6 +1,8 @@
 use crate::organism::Organism;
 
-pub fn insert_close_to_parent(organism: Organism, world: &mut Vec<Organism>, idx: usize) {
+pub type World = Vec<Organism>;
+
+pub fn insert_close_to_parent(organism: Organism, world: &mut World, idx: usize) {
     let first_dead = find_closest_dead_index(&world, idx);
     match first_dead {
         Ok(org) => {
@@ -12,7 +14,7 @@ pub fn insert_close_to_parent(organism: Organism, world: &mut Vec<Organism>, idx
     }
 }
 
-fn find_closest_dead_index(world: &Vec<Organism>, start_idx: usize) -> Result<usize, String> {
+fn find_closest_dead_index(world: &World, start_idx: usize) -> Result<usize, String> {
     if start_idx > world.len() {
         panic!("start_index out of bounds {}", world.len());
     }
@@ -65,13 +67,13 @@ mod tests {
     #[test]
     #[should_panic]
     fn test_find_closest_fails_if_index_out_of_bounds() {
-        let world: Vec<Organism> = Vec::new();
+        let world: World = Vec::new();
         assert!(find_closest_dead_index(&world, 1).is_err());
     }
 
     #[test]
     fn test_find_closest_returns_err_if_no_dead_fields() {
-        let mut world: Vec<Organism> = Vec::with_capacity(3);
+        let mut world: World = Vec::with_capacity(3);
         for _i in 0..world.capacity() {
             world.push(Organism::new("a".to_owned()));
         }
@@ -80,7 +82,7 @@ mod tests {
 
     #[test]
     fn test_find_closest_returns_same_index_if_cell_is_dead() {
-        let mut world: Vec<Organism> = Vec::with_capacity(3);
+        let mut world: World = Vec::with_capacity(3);
         for _i in 0..world.capacity() {
             world.push(Organism::new("a".to_owned()));
         }
@@ -90,7 +92,7 @@ mod tests {
 
     #[test]
     fn test_find_next_dead_cell_if_only_one_is_free() {
-        let mut world: Vec<Organism> = Vec::with_capacity(3);
+        let mut world: World = Vec::with_capacity(3);
         for _i in 0..world.capacity() {
             world.push(Organism::new("a".to_owned()));
         }
@@ -100,7 +102,7 @@ mod tests {
     }
     #[test]
     fn test_find_closest_returns_dead_cell_if_only_one_is_free_and_dead_cell_is_lower_in_index() {
-        let mut world: Vec<Organism> = Vec::with_capacity(3);
+        let mut world: World = Vec::with_capacity(3);
         for _i in 0..world.capacity() {
             world.push(Organism::new("a".to_owned()));
         }
@@ -110,7 +112,7 @@ mod tests {
 
     #[test]
     fn test_closer_match_takes_precendence() {
-        let mut world: Vec<Organism> = Vec::with_capacity(6);
+        let mut world: World = Vec::with_capacity(6);
         for _i in 0..world.capacity() {
             world.push(Organism::new("a".to_owned()));
         }
@@ -121,7 +123,7 @@ mod tests {
 
     #[test]
     fn test_on_same_distance_forward_match_takes_precendence() {
-        let mut world: Vec<Organism> = Vec::with_capacity(6);
+        let mut world: World = Vec::with_capacity(6);
         for _i in 0..world.capacity() {
             world.push(Organism::new("a".to_owned()));
         }

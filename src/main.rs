@@ -16,6 +16,7 @@ mod ui;
 mod world;
 
 use organism::Organism;
+use world::World;
 
 const GENOMES: &[u8] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZ\
                              abcdefghijklmnopqrstuvwxyz\
@@ -60,7 +61,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
     };
 
-    let mut world: Vec<Organism> = (0..ui::WORLD_HEIGHT * ui::WORLD_WIDTH)
+    let mut world: World = (0..ui::WORLD_HEIGHT * ui::WORLD_WIDTH)
         .map(|_| Organism::new(rng_filler()))
         .collect();
 

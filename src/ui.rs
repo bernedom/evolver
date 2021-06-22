@@ -10,9 +10,9 @@ use tui::Terminal;
 pub const WORLD_WIDTH: usize = 50;
 pub const WORLD_HEIGHT: usize = 20;
 
-use crate::organism::Organism;
+use crate::world::World;
 
-fn count_genomes(world: &Vec<Organism>) -> HashMap<String, u16> {
+fn count_genomes(world: &World) -> HashMap<String, u16> {
     let mut result: HashMap<String, u16> = HashMap::new();
     for o in world {
         *result.entry(o.genome.to_string()).or_default() += 1;
@@ -22,7 +22,7 @@ fn count_genomes(world: &Vec<Organism>) -> HashMap<String, u16> {
 
 pub fn draw<B: tui::backend::Backend>(
     terminal: &mut Terminal<B>,
-    world: &Vec<Organism>,
+    world: &World,
     log_messages: &String,
 ) -> std::result::Result<(), io::Error> {
     let known_genomes = count_genomes(&world);
