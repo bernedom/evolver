@@ -1,4 +1,5 @@
 use crate::organism::Organism;
+use std::collections::HashMap;
 
 pub type World = Vec<Organism>;
 
@@ -58,6 +59,24 @@ fn find_closest_dead_index(world: &World, start_idx: usize) -> Result<usize, Str
     } else {
         return Ok(result_backwd.unwrap());
     }
+}
+
+fn count_genomes_map(world: World, mut seed_map: HashMap<String, u16>) -> HashMap<String, u16> {
+    for (_key, value) in seed_map.iter_mut() {
+        *value = 0;
+    }
+    for organism in world.iter() {
+        if !seed_map.contains_key(&organism.genome) {
+            seed_map.insert(organism.genome.clone(), 0);
+        } else {
+            let v = seed_map.get_mut(&organism.genome);
+            match v {
+                Some(v) => *v += 1,
+                None => {}
+            }
+        }
+    }
+    return seed_map;
 }
 
 #[cfg(test)]
@@ -130,5 +149,27 @@ mod tests {
         world[4].genome = "".to_owned();
         world[2].genome = "".to_owned();
         assert_eq!(find_closest_dead_index(&world, 3).unwrap(), 4);
+    }
+
+    #[test]
+    fn test_count_genomes() {
+        let mut world: World = Vec::with_capacity(6);
+        let mut genome_count: HashMap<String, u16> = HashMap::new();
+        for _i in 0..world.capacity() {
+            world.push(Organism::new("a".to_owned()));
+        }
+        genome_count = count_genomes_map(world, genome_count);
+        assert_eq!(genome_count[&"a".to_owned()], 5);
+    }
+
+    #[test]
+    fn test_count_genomes_retains_saved_genomes_but_puts_them_to_0() {
+        let world: World = World::new();
+        let mut genome_count: HashMap<String, u16> = HashMap::new();
+        genome_count.insert("a".to_owned(), 6);
+        genome_count.insert("b".to_owned(), 199);
+        genome_count = count_genomes_map(world, genome_count);
+        assert_eq!(genome_count[&"a".to_owned()], 0);
+        assert_eq!(genome_count[&"b".to_owned()], 0);
     }
 }

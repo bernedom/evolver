@@ -1,3 +1,4 @@
+#[derive(Hash, Eq, PartialEq, Clone, Debug)]
 pub struct Organism {
     pub genome: String,
     pub age: u32,
@@ -36,8 +37,7 @@ mod tests {
     }
     #[test]
     fn test_organism_with_non_empty_genome_is_alive() {
-        let o = Organism::new("x".to_string()
-    );
+        let o = Organism::new("x".to_string());
         assert_eq!(true, o.is_alive());
     }
 }
