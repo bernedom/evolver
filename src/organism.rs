@@ -10,7 +10,7 @@ impl Organism {
         Self {
             genome: g,
             age: 0,
-            max_age: 100,
+            max_age: 200,
         }
     }
     pub fn is_alive(&self) -> bool {
@@ -27,7 +27,7 @@ mod tests {
         let o = Organism::new(String::from("abc"));
         assert_eq!(0, o.age);
         assert_eq!("abc", o.genome);
-        assert_eq!(100, o.max_age);
+        assert_eq!(200, o.max_age);
     }
 
     #[test]

@@ -92,7 +92,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
         for (idx, organism) in world.iter_mut().enumerate() {
             organism.age += 1;
-            // world die faster with age
+            // organisms die faster with age
             match rng.gen_bool(organism.age as f64 / organism.max_age as f64) {
                 true => {
                     organism.genome = String::from("");
