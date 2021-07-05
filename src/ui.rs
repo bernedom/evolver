@@ -39,7 +39,7 @@ pub fn draw<B: tui::backend::Backend>(
             .margin(0)
             .constraints([Constraint::Percentage(30), Constraint::Percentage(70)].as_ref())
             .split(chunks[1]);
-        let mut known_genomes_msg: String = "known genomes: ".to_string();
+        let mut known_genomes_msg: String = "known genomes:\n".to_string();
         for (genome, count) in genome_count {
             known_genomes_msg += &(genome.to_owned() + ": " + &count.to_string() + "\n").to_owned();
         }

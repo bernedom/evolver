@@ -69,7 +69,7 @@ pub fn count_genomes_map(
         *value = 0;
     }
     for organism in world.iter() {
-        if !seed_map.contains_key(&organism.genome) {
+        if !seed_map.contains_key(&organism.genome) && organism.is_alive() {
             seed_map.insert(organism.genome.clone(), 0);
         } else {
             let v = seed_map.get_mut(&organism.genome);
@@ -174,5 +174,16 @@ mod tests {
         genome_count = count_genomes_map(&world, genome_count);
         assert_eq!(genome_count[&"a".to_owned()], 0);
         assert_eq!(genome_count[&"b".to_owned()], 0);
+    }
+
+    #[test]
+    fn test_ignore_empty_string_in_genome_count() {
+        let mut world: World = Vec::with_capacity(6);
+        let mut genome_count: HashMap<String, u16> = HashMap::new();
+        for _i in 0..world.capacity() {
+            world.push(Organism::new("".to_owned()));
+        }
+        genome_count = count_genomes_map(&world, genome_count);
+        assert_eq!(genome_count.len(), 0);
     }
 }
