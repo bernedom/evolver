@@ -21,7 +21,7 @@ use world::World;
 
 const GENOMES: &[u8] = b"ABCDEFGHIJKLMNOPQRSTUVWXYZ\
                              abcdefghijklmnopqrstuvwxyz\
-                             0123456789! ";
+                             0123456789!";
 
 fn spawn(o: &Organism, rng: &mut rand::prelude::ThreadRng) -> Option<Organism> {
     if o.age > 10 {
