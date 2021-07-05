@@ -73,7 +73,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut genome_count: HashMap<String, u16> = HashMap::new();
 
     loop {
-        genome_count = world::count_genomes_map(&world, genome_count);
+        genome_count = world::count_genomes(&world, genome_count);
         ui::draw(&mut terminal, &world, &genome_count, &log)?;
 
         match rx.recv()? {
