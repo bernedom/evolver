@@ -2,6 +2,7 @@ use crossterm::{
     event::KeyCode,
     terminal::{disable_raw_mode, enable_raw_mode},
 };
+use std::collections::HashMap;
 
 use std::io;
 
@@ -69,9 +70,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // set up input handling
     let rx = event_listener::spawn_event_listener();
+    let mut genome_count: HashMap<String, u16> = HashMap::new();
 
     loop {
-        ui::draw(&mut terminal, &world, &log)?;
+        genome_count = world::count_genomes_map(&world, genome_count);
+        ui::draw(&mut terminal, &world, &genome_count, &log)?;
 
         match rx.recv()? {
             event_listener::Event::Input(event) => match event.code {

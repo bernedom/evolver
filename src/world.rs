@@ -61,7 +61,10 @@ fn find_closest_dead_index(world: &World, start_idx: usize) -> Result<usize, Str
     }
 }
 
-fn count_genomes_map(world: World, mut seed_map: HashMap<String, u16>) -> HashMap<String, u16> {
+pub fn count_genomes_map(
+    world: &World,
+    mut seed_map: HashMap<String, u16>,
+) -> HashMap<String, u16> {
     for (_key, value) in seed_map.iter_mut() {
         *value = 0;
     }
@@ -158,7 +161,7 @@ mod tests {
         for _i in 0..world.capacity() {
             world.push(Organism::new("a".to_owned()));
         }
-        genome_count = count_genomes_map(world, genome_count);
+        genome_count = count_genomes_map(&world, genome_count);
         assert_eq!(genome_count[&"a".to_owned()], 5);
     }
 
@@ -168,7 +171,7 @@ mod tests {
         let mut genome_count: HashMap<String, u16> = HashMap::new();
         genome_count.insert("a".to_owned(), 6);
         genome_count.insert("b".to_owned(), 199);
-        genome_count = count_genomes_map(world, genome_count);
+        genome_count = count_genomes_map(&world, genome_count);
         assert_eq!(genome_count[&"a".to_owned()], 0);
         assert_eq!(genome_count[&"b".to_owned()], 0);
     }

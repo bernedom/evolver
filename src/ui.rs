@@ -12,20 +12,12 @@ pub const WORLD_HEIGHT: usize = 20;
 
 use crate::world::World;
 
-fn count_genomes(world: &World) -> HashMap<String, u16> {
-    let mut result: HashMap<String, u16> = HashMap::new();
-    for o in world {
-        *result.entry(o.genome.to_string()).or_default() += 1;
-    }
-    result
-}
-
 pub fn draw<B: tui::backend::Backend>(
     terminal: &mut Terminal<B>,
     world: &World,
+    genome_count: &HashMap<String, u16>,
     log_messages: &String,
 ) -> std::result::Result<(), io::Error> {
-    let known_genomes = count_genomes(&world);
     terminal.draw(|f| {
         let chunks = Layout::default()
             .direction(Direction::Horizontal)
@@ -48,8 +40,8 @@ pub fn draw<B: tui::backend::Backend>(
             .constraints([Constraint::Percentage(30), Constraint::Percentage(70)].as_ref())
             .split(chunks[1]);
         let mut known_genomes_msg: String = "known genomes: ".to_string();
-        for g in known_genomes {
-            known_genomes_msg += &g.0;
+        for (genome, count) in genome_count {
+            known_genomes_msg += &(genome.to_owned() + ": " + &count.to_string() + "\n").to_owned();
         }
         let status = Paragraph::new(known_genomes_msg)
             .block(Block::default().title("status").borders(Borders::ALL))
