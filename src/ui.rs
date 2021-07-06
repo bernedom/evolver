@@ -43,7 +43,7 @@ pub fn draw<B: tui::backend::Backend>(
         for (genome, count) in genome_count {
             if *count > 0 {
                 known_genomes_msg +=
-                    &(genome.to_owned() + ": " + &count.to_string() + "\n").to_owned();
+                    &(genome.to_owned() + ": " + &count.to_string() + " \t").to_owned();
             }
         }
         let status = Paragraph::new(known_genomes_msg)
