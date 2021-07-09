@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use std::collections::VecDeque;
 use std::io;
 
 use tui::layout::{Constraint, Direction, Layout};
@@ -16,7 +17,7 @@ pub fn draw<B: tui::backend::Backend>(
     terminal: &mut Terminal<B>,
     world: &World,
     genome_count: &HashMap<String, u16>,
-    log_messages: &String,
+    log_messages: &VecDeque<String>,
 ) -> std::result::Result<(), io::Error> {
     terminal.draw(|f| {
         let chunks = Layout::default()
@@ -50,7 +51,11 @@ pub fn draw<B: tui::backend::Backend>(
             .block(Block::default().title("status").borders(Borders::ALL))
             .wrap(Wrap { trim: true });
         f.render_widget(status, status_widget_layout[0]);
-        let log = Paragraph::new(log_messages.as_str())
+        let mut log_concatenated = String::new();
+        for message in log_messages.iter() {
+            log_concatenated.push_str(message.as_str());
+        }
+        let log = Paragraph::new(log_concatenated.as_str())
             .block(Block::default().title("log").borders(Borders::ALL))
             .wrap(Wrap { trim: true });
         f.render_widget(log, status_widget_layout[1]);

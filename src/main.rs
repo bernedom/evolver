@@ -3,6 +3,7 @@ use crossterm::{
     terminal::{disable_raw_mode, enable_raw_mode},
 };
 use std::collections::HashMap;
+use std::collections::VecDeque;
 
 use std::io;
 
@@ -66,7 +67,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .map(|_| Organism::new(rng_filler()))
         .collect();
 
-    let log = String::from("");
+    let mut log: VecDeque<String> = VecDeque::with_capacity(20);
 
     // set up input handling
     let rx = event_listener::spawn_event_listener();
@@ -105,6 +106,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
                 let new_organism = spawn(organism, &mut rng);
                 match new_organism {
                     Some(org) => {
+                        if org.genome != organism.genome {
+                            log.push_back(format!(
+                                "New mutation: '{}' from genome '{}'\n",
+                                org.genome, organism.genome
+                            ));
+                        }
                         newborns.push((org, idx));
                     }
                     None => {}
